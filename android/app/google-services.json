@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "117897348297",
+    "firebase_url": "https://minesweeperandroid-ee9ca.firebaseio.com",
+    "project_id": "minesweeperandroid-ee9ca",
+    "storage_bucket": "minesweeperandroid-ee9ca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:117897348297:android:381611c9d3c86d87713918",
+        "android_client_info": {
+          "package_name": "lotfi.habbiche.elearningapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "117897348297-fs2qcmqv2eqdvc7m35k6e6t1nfe5m191.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9f9bHcPFNPe-3oewMxlYgQCUx2FahAoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "117897348297-fs2qcmqv2eqdvc7m35k6e6t1nfe5m191.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
