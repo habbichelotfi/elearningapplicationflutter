@@ -177,19 +177,23 @@ class _LoginFormState extends State<LoginForm> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-
             content: Column(
               mainAxisSize: MainAxisSize.min,
-
               children: [
                 Container(
                   height: 100,
                   width: SizeConfig.screenWidth,
                   color: Colors.red,
-                  child: Icon(Icons.close,color: Colors.white,),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.white,
+                  ),
                 ),
                 Text('Error',
-                    style: TextStyle(fontSize: 16, color: Colors.red,fontWeight: FontWeight.bold)),
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.red,
+                        fontWeight: FontWeight.bold)),
                 Text(errorMessage),
                 ElevatedButton(
                     onPressed: () {
