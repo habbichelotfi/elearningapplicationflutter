@@ -2,6 +2,7 @@ import 'package:elearningapp/constants/colors.dart';
 import 'package:elearningapp/screens/forgot_password/forgot_password_screen.dart';
 import 'package:elearningapp/screens/home/home_screen.dart';
 import 'package:elearningapp/screens/register/register_screen.dart';
+import 'package:elearningapp/screens/register/select_topics_screen.dart';
 import 'package:elearningapp/size_config.dart';
 import 'package:elearningapp/utilities/utilitis.dart';
 import 'package:elearningapp/widgets/password_form_field.dart';
@@ -69,17 +70,21 @@ class _LoginFormState extends State<LoginForm> {
                       _isLoading = true;
                     });
                     await _login();
+                    // Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //         builder: (builder) => SelectTopicsScreen()));
                   }
                 },
                 textButton: 'Sign in'),
             const SizedBox(height: 35),
             Center(
-              child: InkWell(
-                onTap: () {
+              child: TextButton(
+                onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (builder) => RegisterScreen()));
+                          builder: (builder) => const RegisterScreen()));
                 },
                 child: Text("You don't have an account",
                     style: TextStyle(
@@ -93,51 +98,16 @@ class _LoginFormState extends State<LoginForm> {
   }
 
   Future _login() async {
-    // await _auth
-    //     .signInWithEmailAndPassword(
-    //       email: _emailController.text,
-    //       password: _passwordController.text,
-    //     )
-    //     .then((value) => {
-    //           setState(() {
-    //             _isLoading = false;
-    //           }),
-    //           Navigator.push(context,
-    //               MaterialPageRoute(builder: (builder) => HomeScreen()))
-    //         })
-    //     .onError((error, stackTrace) => {
-    //           setState(() {
-    //             _isLoading = false;
-    //           }),
-    //           showDialog(
-    //               context: context,
-    //               builder: (BuildContext context) {
-    //                 return AlertDialog(
-    //                   content: Column(
-    //                     mainAxisSize: MainAxisSize.min,
-    //                     children: [
-    //                       Text('Error'),
-    //                       Text(error.toString()),
-    //                       ElevatedButton(
-    //                           onPressed: () {
-    //                             Navigator.pop(context);
-    //                           },
-    //                           child: Text('Retry'))
-    //                     ],
-    //                   ),
-    //                 );
-    //               })
-    //         });
-
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: "lotfihabbiche@gmail.com", password: "SuperSecretPassword!");
+          email: _emailController.text, password: _passwordController.text);
       setState(() {
         _isLoading = false;
       });
+      Navigator.push(
+          context, MaterialPageRoute(builder: (builder) => HomeScreen()));
     } on FirebaseAuthException catch (e) {
       var errorCode = e.code;
-      print(errorCode);
       var errorMessage = '';
       switch (errorCode) {
         case 'invalid-email':
@@ -158,51 +128,7 @@ class _LoginFormState extends State<LoginForm> {
       setState(() {
         _isLoading = false;
       });
-      showErrorDialog(errorMessage);
+      showErrorDialog(errorMessage, context);
     }
-    // if (user != null) {
-    //   print('da');
-    //   setState(() {
-    //     _success = true;
-    //   });
-    // } else {
-    //   setState(() {
-    //     _success = false;
-    //   });
-    // }
-  }
-
-  showErrorDialog(String errorMessage) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 100,
-                  width: SizeConfig.screenWidth,
-                  color: Colors.red,
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.white,
-                  ),
-                ),
-                Text('Error',
-                    style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.red,
-                        fontWeight: FontWeight.bold)),
-                Text(errorMessage),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('Retry'))
-              ],
-            ),
-          );
-        });
   }
 }

@@ -30,10 +30,11 @@ class _DefaultButtonState extends State<DefaultButton> {
           : Text(widget.textButton,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
       style: ElevatedButton.styleFrom(
+        elevation: 0,
           fixedSize: Size(SizeConfig.screenWidth * widget.percentage, 52),
           primary: primaryColor,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(22))),
     );
   }
 }

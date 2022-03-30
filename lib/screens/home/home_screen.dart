@@ -4,11 +4,16 @@ import 'package:elearningapp/screens/home/profile_screen.dart';
 import 'package:elearningapp/screens/home/wishlist_screen.dart';
 import 'package:elearningapp/size_config.dart';
 import 'package:elearningapp/widgets/bottom_navigation.dart';
-import 'package:elearningapp/widgets/course_card.dart';
 import 'package:flutter/material.dart';
 import 'package:elearningapp/constants/colors.dart';
-import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+var fullName='';
 
+Future getFullName() async{
+  final prefs=await SharedPreferences.getInstance();
+  fullName=prefs.getString('full_name')!;
+
+}
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
@@ -17,6 +22,12 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState(){
+    getFullName().then((value) => {setState((){})});
+  }
+
+
   int _selectedIndex = 0;
   static const List<Widget> _widgetOptions = <Widget>[
     ExploreScreen(),

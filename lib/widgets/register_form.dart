@@ -1,15 +1,19 @@
 import 'package:elearningapp/constants/colors.dart';
+import 'package:elearningapp/screens/home/home_screen.dart';
 import 'package:elearningapp/screens/login/login_screen.dart';
 import 'package:elearningapp/screens/register/select_topics_screen.dart';
 import 'package:elearningapp/utilities/utilitis.dart';
 import 'package:elearningapp/widgets/password_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'default_button.dart';
 import 'form_field.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final FirebaseAuth _auth = FirebaseAuth.instance;
+final FirebaseFirestore firestore = FirebaseFirestore.instance;
+CollectionReference users = FirebaseFirestore.instance.collection('users');
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
@@ -57,11 +61,6 @@ class _RegisterFormState extends State<RegisterForm> {
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
                     _register();
-                    if (_success)
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => SelectTopicsScreen()));
                   }
                 },
                 textButton: 'Sign Up'),
@@ -84,19 +83,56 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   void _register() async {
-    final user = (await _auth.createUserWithEmailAndPassword(
-      email: _emailController.text,
-      password: _passwordController.text,
-    ))
-        .user;
-    if (user != null) {
+    setState(() {
+      _isLoading=true;
+    });
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final user = (await _auth.createUserWithEmailAndPassword(
+              email: _emailController.text, password: _passwordController.text))
+          .user;
+      users
+          .add({
+            'full_name': _fullnameController.text,
+            'email': _emailController.text,
+            'id': user!.uid,
+          })
+          .then((value) => {
+                prefs.setString('id', user!.uid),
+                prefs.setString('full_name', _fullnameController.text),
+                setState(() {
+                  _isLoading = false;
+                }),
+                Navigator.pop(context),
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (builder) => SelectTopicsScreen()))
+              })
+          .catchError((error) => print("Failed to add user: $error"));
+    } on FirebaseAuthException catch (e) {
       setState(() {
-        _success = true;
+        _isLoading = false;
       });
-    } else {
+      var errorCode = e.code;
+      var errorMessage = '';
+      switch (errorCode) {
+        case 'invalid-email':
+          errorMessage = 'Mail Invalid';
+          break;
+        case 'email-already-in-use':
+          errorMessage = 'Address mail is already in use';
+          break;
+        default:
+          {
+            errorMessage = 'Internal error';
+          }
+      }
+
       setState(() {
-        _success = false;
+        _isLoading = false;
       });
+      showErrorDialog(errorMessage, context);
     }
   }
 }

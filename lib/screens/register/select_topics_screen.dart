@@ -2,6 +2,9 @@ import 'package:elearningapp/screens/home/home_screen.dart';
 import 'package:elearningapp/widgets/default_button.dart';
 import 'package:elearningapp/widgets/topic_card.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+CollectionReference users = FirebaseFirestore.instance.collection('users');
 
 class SelectTopicsScreen extends StatefulWidget {
   const SelectTopicsScreen({Key? key}) : super(key: key);
@@ -33,7 +36,6 @@ class _SelectTopicsScreenState extends State<SelectTopicsScreen> {
     'assets/images/gaming.png',
     'assets/images/data_science.png',
     'assets/images/algorithm.png',
-
   ];
 
   @override
@@ -43,10 +45,20 @@ class _SelectTopicsScreenState extends State<SelectTopicsScreen> {
         isLoading: false,
         percentage: 0.85,
         textButton: 'Start Learning',
-        onPressed: () {
-          Navigator.pop(context);
-          Navigator.push(
-              context, MaterialPageRoute(builder: (builder) => HomeScreen()));
+        onPressed: () async{
+          List<String> listTopics=[];
+          final prefs=await SharedPreferences.getInstance();
+          var uid=prefs.getString('id');
+          for(int i=0;i<isTopicSelect.length;i++){
+            if(isTopicSelect.elementAt(i)){
+              listTopics.add(_listTopics.elementAt(i));
+            }
+          }
+          prefs.setStringList('topics', listTopics);
+
+          // Navigator.pop(context);
+          // Navigator.push(
+          //     context, MaterialPageRoute(builder: (builder) => HomeScreen()));
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -69,16 +81,14 @@ class _SelectTopicsScreenState extends State<SelectTopicsScreen> {
                   textAlign: TextAlign.center,
                 )),
           ),
-          const SizedBox(
-            height: 30,
-          ),
+          const SizedBox(height: 30),
           Wrap(runSpacing: 50, spacing: 50, children: [
             for (int i = 0; i < _listTopics.length; i++)
               InkWell(
                 splashColor: Colors.transparent,
-                onTap: (){
+                onTap: () {
                   setState(() {
-                    isTopicSelect[i]=!isTopicSelect[i];
+                    isTopicSelect[i] = !isTopicSelect[i];
                   });
                 },
                 child: TopicCard(
