@@ -8,7 +8,7 @@ import 'package:elearningapp/utilities/utilitis.dart';
 import 'package:elearningapp/widgets/password_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'default_button.dart';
 import 'form_field.dart';
 
@@ -104,6 +104,8 @@ class _LoginFormState extends State<LoginForm> {
       setState(() {
         _isLoading = false;
       });
+      final prefs=await SharedPreferences.getInstance();
+      await prefs.setBool('logged', true);
       Navigator.push(
           context, MaterialPageRoute(builder: (builder) => HomeScreen()));
     } on FirebaseAuthException catch (e) {

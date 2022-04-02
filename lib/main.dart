@@ -1,10 +1,21 @@
 import 'package:elearningapp/constants/colors.dart';
+import 'package:elearningapp/screens/home/home_screen.dart';
 import 'package:elearningapp/screens/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+var routes='login';
+
+
 void main() async{
+
+
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  final prefs=await SharedPreferences.getInstance();
+  if(prefs.containsKey('logged')){
+    routes='home';
+  }
   runApp(const MyApp());
 }
 
@@ -16,9 +27,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+        fontFamily: 'OpenSans',
         primaryColor:  primaryColor,
       ),
-      home: const LoginScreen(),
+      home:routes=="login"? const LoginScreen():const HomeScreen(),
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import '../../size_config.dart';
 
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({Key? key}) : super(key: key);
@@ -16,6 +17,17 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
+  Future getAllCourses() async{
+    var courses=await FirebaseFirestore.instance.collection('courses').snapshots();
+    var courseCategorie=[];
+    courses.first.then((value) => print(value.docs.map((e) => print('${e.id} hello'))));
+    //courses.first.then((value) => print(value.docs.first.data()));
+  }
+
+
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final Stream<QuerySnapshot> courses =
+      FirebaseFirestore.instance.collection('courses').snapshots();
   List<String> _listTopics = [
     'Web dev',
     'Mobile Dev',
@@ -58,6 +70,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
         courseRating: "4.8",
         isLiked: true),
   ];
+  @override
+  void initState(){
+    super.initState();
+    getAllCourses();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +99,17 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       Text(
                         "Hi,Bro",
                         style: TextStyle(
-                            fontSize: 25,
+                            fontSize: 23,
+                            fontFamily: 'OpenSans',
                             color: Colors.white,
                             fontWeight: FontWeight.bold),
                       ),
                       Text(
                         "Let's start learning",
-                        style: TextStyle(fontSize: 15, color: Colors.white),
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'OpenSans',
+                            color: Colors.white),
                       )
                     ],
                   ),
@@ -294,6 +315,63 @@ class _ExploreScreenState extends State<ExploreScreen> {
                     ])),
           ],
         ),
+        const SizedBox(
+          height: 20,
+        ),
+        // FutureBuilder<DocumentSnapshot>(
+        //   future: courses.doc('IA').get(),
+        //   builder:
+        //       (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        //     if (snapshot.hasError) {
+        //       return Text("Something went wrong");
+        //     }
+        //
+        //     if (snapshot.hasData && !snapshot.data!.exists) {
+        //       return Text("Document does not exist");
+        //     }
+        //
+        //     if (snapshot.connectionState == ConnectionState.done) {
+        //       Map<String, dynamic> data =
+        //           snapshot.data!.data() as Map<String, dynamic>;
+        //       return Text(
+        //           "Full Name: ${data['full_name']} ${data['last_name']}");
+        //     }
+        //
+        //     return Text("loading");
+        //   },
+        // )
+        StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: FirebaseFirestore.instance.collection('courses').doc('IA').snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+           // print(snapshot.data!.docs.elementAt(0).get('machine_learning'));
+                //for a specific field
+
+
+
+            if (snapshot.hasError) {
+              return Text('Something went wrong');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Text("Loading");
+            }
+
+            return Column(
+                children: [
+                  Text(snapshot.data!.id)]);
+            //   ListView(
+            //   children: snapshot.data!.docs.map((DocumentSnapshot document) {
+            //     Map<String, dynamic> data =
+            //         document.data()! as Map<String, dynamic>;
+            //     return ListTile(
+            //       title: Text('data'),
+            //       //subtitle: Text(data['company']),
+            //     );
+            //   }).toList(),
+            // );
+          },
+        )
       ],
     ));
   }

@@ -98,7 +98,7 @@ class _RegisterFormState extends State<RegisterForm> {
             'id': user!.uid,
           })
           .then((value) => {
-                prefs.setString('id', user!.uid),
+                prefs.setString('id', user.uid),
                 prefs.setString('full_name', _fullnameController.text),
                 setState(() {
                   _isLoading = false;
