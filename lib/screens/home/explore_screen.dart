@@ -2,7 +2,6 @@ import 'package:elearningapp/constants/colors.dart';
 import 'package:elearningapp/widgets/course_card.dart';
 import 'package:elearningapp/widgets/course_item_in_cart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import '../../size_config.dart';
 
@@ -17,18 +16,21 @@ class ExploreScreen extends StatefulWidget {
 }
 
 class _ExploreScreenState extends State<ExploreScreen> {
-  Future getAllCourses() async{
-    var courses=await FirebaseFirestore.instance.collection('courses').snapshots();
-    var courseCategorie=[];
-    courses.first.then((value) => print(value.docs.map((e) => print('${e.id} hello'))));
+  var f = [];
+  Future getAllCourses() async {
+    //var courses = await FirebaseFirestore.instance.collection('courses').get();
+    FirebaseFirestore.instance
+        .collection('courses')
+        .get()
+        .then((value) => value.docs.forEach((element) {}));
+
     //courses.first.then((value) => print(value.docs.first.data()));
   }
-
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final Stream<QuerySnapshot> courses =
       FirebaseFirestore.instance.collection('courses').snapshots();
-  List<String> _listTopics = [
+  final List<String> _listTopics = [
     'Web dev',
     'Mobile Dev',
     'IA',
@@ -39,7 +41,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     'Data science',
     'Algorithms'
   ];
-  List<String> _listIconsTopics = [
+  final List<String> _listIconsTopics = [
     'assets/images/web.png',
     'assets/images/mobile.png',
     'assets/images/ia.png',
@@ -50,7 +52,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     'assets/images/data_science.png',
     'assets/images/algorithm.png',
   ];
-  List<CourseCard> popularCourses = [
+  List<CourseCard> popularCourses = const [
     CourseCard(
         courseName: "Design Thinking Fundamental",
         courseOwner: "Robert Fox",
@@ -71,7 +73,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         isLiked: true),
   ];
   @override
-  void initState(){
+  void initState() {
     super.initState();
     getAllCourses();
   }
@@ -83,8 +85,8 @@ class _ExploreScreenState extends State<ExploreScreen> {
       children: [
         Container(
             height: getProportionateScreenHeight(165),
-            padding: EdgeInsets.all(30),
-            decoration: BoxDecoration(
+            padding: const EdgeInsets.all(30),
+            decoration: const BoxDecoration(
                 color: Color(0xff00a9b8),
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(30),
@@ -341,13 +343,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
         //   },
         // )
         StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: FirebaseFirestore.instance.collection('courses').doc('IA').snapshots(),
-          builder:
-              (BuildContext context, AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-           // print(snapshot.data!.docs.elementAt(0).get('machine_learning'));
-                //for a specific field
-
-
+          stream: FirebaseFirestore.instance
+              .collection('courses')
+              .doc('IA')
+              .snapshots(),
+          builder: (BuildContext context,
+              AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+            // print(snapshot.data!.docs.elementAt(0).get('machine_learning'));
+            //for a specific field
 
             if (snapshot.hasError) {
               return Text('Something went wrong');
@@ -357,9 +360,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               return Text("Loading");
             }
 
-            return Column(
-                children: [
-                  Text(snapshot.data!.id)]);
+            return Column(children: [Text(snapshot.data!.id)]);
             //   ListView(
             //   children: snapshot.data!.docs.map((DocumentSnapshot document) {
             //     Map<String, dynamic> data =
